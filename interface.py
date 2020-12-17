@@ -12,9 +12,9 @@ class TableOutput:
             max_len = len(self.list_fields[i])
             for row in self.list_row:
                 max_len = max(max_len, len(str(row[i])))
-            out_list[0] += str(self.list_fields[i]).ljust((max_len+4)*2, " ")
+            out_list[0] += str(self.list_fields[i]).ljust((max_len+4), " ")
             for row_index in range(len(self.list_row)):
-                out_list[row_index + 1] += str(self.list_row[row_index][i]).ljust((max_len+4)*2, " ")
+                out_list[row_index + 1] += str(self.list_row[row_index][i]).ljust((max_len+4), " ")
         return "\n".join(out_list)
 
 

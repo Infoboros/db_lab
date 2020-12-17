@@ -62,7 +62,8 @@ class Model:
         for field, arg in kwargs.items():
             field_list.append(field)
             arg_list.append(self._get_arg(arg))
-
+        if not field_list:
+            raise self.SQLException("Укажите хотя бы одно поле.")
         self._send_request(f'INSERT INTO {self.table_name}'
                            f' {"(" + ",".join(field_list) + ")"} '
                            f'VALUES {"(" + ",".join(arg_list) + ")"}')
@@ -132,6 +133,9 @@ class MeterModel(Dict):
     def __init__(self):
         super().__init__()
         self.table_name = "meter_model"
+        self.list_fileds[-1] = 'name'
+        self.list_fileds.append('accuracy_class')
+        self.list_types.append(str)
 
 
 class Address(Model):

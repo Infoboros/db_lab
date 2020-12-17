@@ -1,4 +1,6 @@
 import sys
+
+from PyQt5.QtGui import QFontDatabase
 from PyQt5.QtWidgets import QApplication, QWidget
 from ui.main_form import MainForm
 

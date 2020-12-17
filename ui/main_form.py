@@ -10,12 +10,12 @@ class MainForm(object):
 
     def setupUi(self, Form):
         Form.setObjectName("Интерфейс к БД")
-        Form.resize(700, 600)
-        Form.setMinimumSize(QtCore.QSize(700, 600))
-        Form.setMaximumSize(QtCore.QSize(700, 600))
+        Form.resize(1200, 600)
+        Form.setMinimumSize(QtCore.QSize(1200, 600))
+        Form.setMaximumSize(QtCore.QSize(1200, 600))
 
         self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 700, 600))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 1200, 600))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
