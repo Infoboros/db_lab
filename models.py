@@ -8,14 +8,21 @@ DATABASE_HOST = "localhost"
 
 class Model:
 
-    def __init__(self):
+    def __init__(self, table_name: str):
         self.conn = psycopg2.connect(dbname=DATABASE_NAME, user=DATABASE_USER,
                                      password=DATABASE_PASSWORD, host=DATABASE_HOST)
         self.conn.set_session(autocommit=True)
         self.cursor = self.conn.cursor()
-        self.table_name = "table_name"
-        self.list_fileds = ['id']
-        self.list_types = [int]
+        self.table_name = table_name
+
+        self._send_request(f'SELECT column_name, data_type '
+                           f'from information_schema.columns '
+                           f"where table_schema='public' AND table_name='{table_name}'")
+        fields = self.cursor.fetchall()
+
+        self.list_fileds = [el[0] for el in fields]
+        self.list_types = [int if el[1] == 'integer' else str
+                           for el in fields]
 
     def _get_arg(self, arg) -> str:
         if type(arg) is str:
@@ -93,183 +100,80 @@ class Model:
 
 
 class Dict(Model):
-    def __init__(self):
-        super().__init__()
-        self.list_fileds += ['description']
-        self.list_types += [str]
+    def __init__(self, table_name: str):
+        super().__init__(table_name)
 
 
 class OrganizationType(Dict):
     def __init__(self):
-        super().__init__()
-        self.table_name = "organizationtype"
+        super().__init__("organizationtype")
 
 
 class TypeOfEvent(Dict):
     def __init__(self):
-        super().__init__()
-        self.table_name = "typeofevent"
+        super().__init__("typeofevent")
 
 
 class TypeOfWindow(Dict):
     def __init__(self):
-        super().__init__()
-        self.table_name = "typeofwindow"
+        super().__init__("typeofwindow")
 
 
 class TypeOfWall(Dict):
     def __init__(self):
-        super().__init__()
-        self.table_name = "typeofwall"
+        super().__init__("typeofwall")
 
 
 class TypeOfResource(Dict):
     def __init__(self):
-        super().__init__()
-        self.table_name = "typeofresource"
+        super().__init__("typeofresource")
 
 
 class MeterModel(Dict):
     def __init__(self):
-        super().__init__()
-        self.table_name = "meter_model"
-        self.list_fileds[-1] = 'name'
-        self.list_fileds.append('accuracy_class')
-        self.list_types.append(str)
+        super().__init__("meter_model")
 
 
 class Address(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "address"
-        self.list_fileds += [
-            'index',
-            'region',
-            'rajon',
-            'town',
-            'street',
-            'building',
-            'corpus'
-        ]
-        self.list_types += [int] + [str for _ in range(6)]
+        super().__init__("address")
 
 
 class Manager(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "manager"
-        self.list_fileds += [
-            'last_name',
-            'first_name',
-            'patronymic_name',
-            'position',
-            'phone',
-            'email'
-        ]
-        self.list_types += [str for _ in range(6)]
+        super().__init__("manager")
 
 
 class EObject(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "eobject"
-        self.list_fileds += [
-            'type_org',
-            'place_adress',
-            'director',
-            'inn',
-            'ogrn',
-            'okved',
-            'full_name',
-            'phone',
-            'pes_having'
-        ]
-        self.list_types += [int for _ in range(4)] + [str for _ in range(4)] + [bool]
+        super().__init__("eobject")
 
 
 class Vehicle(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "vehicle"
-        self.list_fileds += [
-            'eobject',
-            'name',
-            'count',
-            'carrrying',
-            'milleage',
-            'fuel_rate'
-        ]
-        self.list_types += [int, str] + [int for _ in range(4)]
+        super().__init__("vehicle")
 
 
 class Event(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "event"
-        self.list_fileds += [
-            'eobject',
-            'type_event',
-            'percentage_save',
-            'year',
-            'cost'
-        ]
-        self.list_types += [int for _ in range(2)] + [float] + [int for _ in range(2)]
+        super().__init__("event")
 
 
 class Building(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "building"
-        self.list_fileds += [
-            'eobject',
-            'type_window',
-            'type_wall',
-            'name',
-            'description',
-            'place',
-            'square',
-            'space',
-            'level_count'
-        ]
-        self.list_types += [int for _ in range(3)] + [str for _ in range(2)] + [int, float, float, int]
+        super().__init__("building")
 
 
 class Resource(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "resource"
-        self.list_fileds += [
-            'eobject',
-            'type_resource',
-            'name_rso',
-            'contract_number',
-            'contract_date'
-        ]
-        self.list_types += [int for _ in range(2)] + [str for _ in range(3)]
+        super().__init__("resource")
 
 
 class Consumption(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "consumption"
-        self.list_fileds += [
-            'resource',
-            'year',
-            'annuale_rate',
-            'annuale_cost'
-        ]
-        self.list_types += [int for _ in range(4)]
+        super().__init__("consumption")
 
 
 class Meter(Model):
     def __init__(self):
-        super().__init__()
-        self.table_name = "meter"
-        self.list_fileds += ['building',
-                             'resource',
-                             'date_commissioning',
-                             'factory_number',
-                             'date_verification',
-                             'model',
-                             ]
-        self.list_types += [int for _ in range(2)] + [float] + [int for _ in range(3)]
+        super().__init__("meter")
